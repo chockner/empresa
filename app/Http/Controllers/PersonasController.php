@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Persona;
 use App\Http\Requests\CreatePersonaRequest;
 use GuzzleHttp\Middleware;
+use Illuminate\Support\Facades\Storage;
 
 class PersonasController extends Controller
 {
     public function __construct()
     {
-        /* $this->middleware('auth')->only('create', 'edit'); */
         $this->middleware('auth')->except('index', 'show');
     }
     public function index()
@@ -33,7 +33,19 @@ class PersonasController extends Controller
     }
     public function store(CreatePersonaRequest $request)
     {
-        /* $camposv = request()->validate([
+        $persona = new Persona($request->validated());
+        $persona->image = $request->file('image')->store('images');
+        $persona->save();
+
+        return redirect()->route('personas.index')->with('estado', 'Persona registrada con exito');
+    }
+    public function edit(Persona $persona)
+    {
+        return view('edit', compact('persona'));
+    }
+    public function update(Request $request, Persona $persona)
+    {
+        $request->validate([
             'cPerApellido' => 'required',
             'cPerNombre' => 'required',
             'cPerDireccion' => 'required',
@@ -43,21 +55,18 @@ class PersonasController extends Controller
             'nPerSueldo' => 'required',
             'nPerEstado' => 'required'
         ]);
-        Persona::create($camposv); */
+        // Si se ha subido una nueva imagen
+        if ($request->hasFile('image')) {
+            // Elimina la imagen anterior si existe
+            if ($persona->image) {
+                Storage::delete($persona->image);
+            }
+            // Guarda la nueva imagen
+            $persona->image = $request->file('image')->store('images');
+            $persona->save();
+        }
 
-        Persona::create($request->validated());
-
-        return redirect()->route('personas.index');
-    }
-    public function edit(Persona $id)
-    {
-        return view('edit', [
-            'persona' => $id
-        ]);
-    }
-    public function update(Persona $id)
-    {
-        $id->update([
+        $persona->update([
             'cPerApellido' => request('cPerApellido'),
             'cPerNombre' => request('cPerNombre'),
             'cPerDireccion' => request('cPerDireccion'),
@@ -67,10 +76,11 @@ class PersonasController extends Controller
             'nPerSueldo' => request('nPerSueldo'),
             'nPerEstado' => request('nPerEstado')
         ]);
-        /* $persona->update($request->validated());
-        return redirect()->route('personas.show', $persona->id); */
-        return redirect()->route('personas.show', $id);
+
+        return redirect()->route('personas.show', $persona->id)
+            ->with('estado', 'persona actualizado con éxito');
     }
+
     public function destroy(Persona $persona)
     {
         $persona->delete();

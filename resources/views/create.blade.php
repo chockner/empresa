@@ -8,14 +8,9 @@
         <tr>
             <th colspan="4">Registar Persona</th>
         </tr>
-        {{--         @if ($errors->any())
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        @endif --}}
-        <form action="{{ route('personas.store') }}" method="post">
+
+        <form action="{{ route('personas.store') }}" method="post" enctype="multipart/form-data">
+            @include('partials.form', ['btnText' => 'Guardar'])
             @csrf
             <tr>
                 <th>Apellido</th>

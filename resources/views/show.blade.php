@@ -3,21 +3,12 @@
 @section('title', 'Servicio | ' . $persona->cPerApellido)
 
 @section('content')
-
-    {{--         @auth
-        <tr>
-            <td colspan="4">{{ $servicio->titulo }}
-                <a href="{{ route('servicios.edit', $servicio) }}">Editar</a>
-            </td>
-            <td colspan="2">
-                <form action="{{ route('servicios.destroy', $servicio) }}", method="POST">
-                    @csrf @method('DELETE')
-                    <button>Eliminar</button>
-                </form>
-            </td>
-        </tr>
-    @endauth --}}
-
+    <tr>
+        <td>
+            <img src="{{ asset('storage/' . $persona->image) }}" alt="{{ $persona->cPerApellido }}" width="100"
+                height="100">
+        </td>
+    </tr>
     <tr>
         <td colspan="4">{{ $persona->cPerApellido }}</td> |
     </tr>
@@ -45,8 +36,6 @@
         @else
             <td colspan="4">Soltero</td> |
         @endif
-
-        {{-- <td colspan="4">{{ $persona->nPerEstado }}</td> | --}}
     </tr>
     <tr>
         <td colspan="4">{{ $persona->created_at }}</td> |

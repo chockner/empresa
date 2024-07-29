@@ -19,8 +19,9 @@
             </ul>
         @endif
 
-        <form action="{{ route('personas.update', $persona) }}" method="post">
-            @csrf @method('PATCH')
+        <form action="{{ route('personas.update', $persona->id) }}" method="post" enctype="multipart/form-data">
+            @include('partials.form', ['btnText' => 'Editar'])>
+            @csrf @method('PUT')
             <tr>
                 <th>Apellido</th>
                 <td><input type="text" id="cPerApellido" name="cPerApellido" value="{{ $persona->cPerApellido }}"></td>
